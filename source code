@@ -1,0 +1,47 @@
+import React, { useState } from "react";
+import axios from "axios";
+
+const Weather = () => {
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+  const API_KEY = "a847ff2a1a5e4a1f0a7d69d5b7bb3fd4"; // Replace with your API key
+
+  const fetchWeather = async () => {
+    if (!city) return;
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      setWeather(response.data);
+    } catch (error) {
+      alert("City not found!");
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center p-6 bg-blue-200 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Weather App 🌤️</h1>
+      <input
+        type="text"
+        placeholder="Enter city name..."
+        className="p-2 border rounded"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
+      <button onClick={fetchWeather} className="mt-3 bg-blue-500 text-white px-4 py-2 rounded">
+        Get Weather
+      </button>
+
+      {weather && (
+        <div className="mt-4 p-4 bg-white rounded shadow">
+          <h2 className="text-xl font-semibold">{weather.name}, {weather.sys.country}</h2>
+          <p>🌡️ Temperature: {weather.main.temp}°C</p>
+          <p>☁️ Condition: {weather.weather[0].description}</p>
+          <p>💨 Wind Speed: {weather.wind.speed} m/s</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Weather;
